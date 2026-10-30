@@ -2,6 +2,8 @@
 
 Timer bars for Phoenix XI, an Ashita v4 addon. Four stacks of bars: buffs you cast, debuffs you land, your recasts, and timers of your own.
 
+![pxtimers in move mode, showing sample bars on all four panels](example.png)
+
 ## Install
 
 1. Download this repo (Code > Download ZIP) and unzip it into your Ashita `addons` folder as a folder named `pxtimers`, so you have `addons/pxtimers/pxtimers.lua`.
