@@ -19,7 +19,7 @@ Settings are kept per character in `config/addons/pxtimers`.
 | Recasts | Your spell and ability recasts, filling up until ready | Right, growing up |
 | Custom | Timers you start with `/pxt custom` | Right, growing down |
 
-Each bar shows the icon, the name and the time left. The colour moves from High to Mid to Low as it runs out (green, gold, red by default; recasts go the other way and turn green when nearly ready). A bar flashes for a few seconds when it ends.
+Each bar shows the icon, the name and the time left. A panel widens to fit its longest name, so names are never cut short; the Width setting is the narrowest it goes. The colour moves from High to Mid to Low as it runs out (green, gold, red by default; recasts go the other way and turn green when nearly ready). A bar flashes for a few seconds when it ends.
 
 - **Move:** `/pxt move` unlocks every panel and fills it with sample bars. Drag a panel by its bars or its name tab, then `/pxt lock`.
 - **Shift-click** a bar to remove it.

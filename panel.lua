@@ -109,6 +109,41 @@ function Panel:Metrics()
     };
 end
 
+-- Text on the right of a bar, and the same with every digit as 0, so the space kept for it
+-- doesn't change as the seconds tick.
+local function right_text(self, row)
+    if (row.Complete) then
+        return (self.Name == 'Recast') and 'Ready' or '';
+    elseif (row.Duration > 0) then
+        return time_text(row.Duration, self.Settings.ShowTenths);
+    end
+    return '';
+end
+
+--[[
+* Widens the panel to fit its longest name next to its widest time, so names are never cut.
+* The Width setting is the narrowest the panel goes. Name widths are kept on each timer until the
+* font or size changes, since they're measured letter by letter.
+--]]
+function Panel:FitWidth(m, rows)
+    local name_w, time_w = 0, 0;
+    for _, row in ipairs(rows) do
+        local c = row.Local.NameWidth;
+        if (c == nil or c.text ~= row.Label or c.font ~= m.font or c.px ~= m.px) then
+            c = { text = row.Label, font = m.font, px = m.px, w = draw.text_width(m.font, m.px, row.Label) };
+            row.Local.NameWidth = c;
+        end
+        name_w = math.max(name_w, c.w);
+        local right = right_text(self, row):gsub('%d', '0');
+        if (right ~= '') then
+            time_w = math.max(time_w, draw.text_width(m.font, m.px, right));
+        end
+    end
+    local icon = (m.icon > 0) and (m.icon + m.pad) or 0;
+    local need = icon + m.pad + name_w + ((time_w > 0) and (m.pad * 3 + time_w) or 0) + m.pad;
+    m.width = math.max(m.width, math.ceil(need));
+end
+
 -----------------------------------
 -- Timers in, sorted render rows out
 -----------------------------------
@@ -217,27 +252,14 @@ function Panel:DrawBar(list, m, x, y, row)
 
     -- Time on the right, name on the left in what's left over.
     local ty = y + math.floor((m.bar_h - m.line) / 2);
-    local right = '';
-    if (row.Complete) then
-        right = (self.Name == 'Recast') and 'Ready' or '';
-    elseif (row.Duration > 0) then
-        right = time_text(row.Duration, s.ShowTenths);
-    end
-    local right_w = 0;
+    local right = right_text(self, row);
     if (right ~= '') then
-        right_w = draw.text_width(m.font, m.px, right);
+        local right_w = draw.text_width(m.font, m.px, right);
         draw.text(list, m.font, m.px, x2 - m.pad - right_w, ty, PALETTE.text, right);
     end
-    -- Fitting the name is a loop, so it's kept on the timer until the name, room or font changes.
-    local room  = math.floor(bar_w - (m.pad * 3) - right_w);
-    local fit   = row.Local.Fit;
-    if (fit == nil or fit.text ~= row.Label or fit.room ~= room or fit.font ~= m.font or fit.px ~= m.px) then
-        fit = { text = row.Label, room = room, font = m.font, px = m.px, out = draw.fit(m.font, m.px, row.Label, room) };
-        row.Local.Fit = fit;
-    end
-    local label = fit.out;
-    if (label ~= '') then
-        draw.text(list, m.font, m.px, bar_x + m.pad, ty, PALETTE.text, label);
+    -- The panel is already wide enough for every name (see Panel:FitWidth), so names are never cut.
+    if (row.Label ~= '') then
+        draw.text(list, m.font, m.px, bar_x + m.pad, ty, PALETTE.text, row.Label);
     end
 
     self.HitBoxes:append({ MinX = x, MinY = y, MaxX = x2, MaxY = y2, Row = row });
@@ -257,6 +279,7 @@ function Panel:Render(timers)
     end
 
     local m      = self:Metrics();
+    self:FitWidth(m, rows);
     local count  = math.max(#rows, self.AllowDrag and 1 or 0);
     local height = (count * m.bar_h) + (math.max(count - 1, 0) * m.gap);
     local ax, ay = s.Position.X, s.Position.Y;

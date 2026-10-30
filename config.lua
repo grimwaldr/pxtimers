@@ -118,7 +118,8 @@ local function panel_tab(name)
 
     imgui.TextColored(HEADER, 'Size');
     slider_float('Scale' .. id .. 'Scale', s, 'Scale', 0.5, 3.0, '%.2f');
-    slider_int('Width' .. id .. 'Width', s, 'Width', 100, 400);
+    slider_int('Min width' .. id .. 'Width', s, 'Width', 100, 400);
+    imgui.ShowHelp('The panel widens past this to fit its longest name, so names are never cut short.');
     slider_int('Bar height' .. id .. 'Height', s, 'BarHeight', 10, 32);
     slider_int('Spacing' .. id .. 'Spacing', s, 'Spacing', 0, 10);
 

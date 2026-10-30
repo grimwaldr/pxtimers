@@ -171,25 +171,6 @@ function draw.text(list, font, px, x, y, color, text)
     list:AddText({ x, y }, imgui.GetColorU32(color), text);
 end
 
--- Cuts text down (with '..') until it fits in `width`.
-function draw.fit(font, px, text, width)
-    if (width <= 0) then
-        return '';
-    end
-    if (draw.text_width(font, px, text) <= width) then
-        return text;
-    end
-    local cut = #text;
-    while (cut > 1) do
-        cut = cut - 1;
-        local t = text:sub(1, cut) .. '..';
-        if (draw.text_width(font, px, t) <= width) then
-            return t;
-        end
-    end
-    return '';
-end
-
 -----------------------------------
 -- Icons
 -----------------------------------
