@@ -11,7 +11,7 @@
 
 addon.name    = 'pxtimers';
 addon.author  = 'Grimwald';
-addon.version = '0.1.0';
+addon.version = '0.1.1';
 addon.desc    = 'Buff, debuff, recast and custom timer bars for Phoenix XI.';
 addon.link    = 'https://github.com/grimwaldr/pxtimers';
 
@@ -31,8 +31,8 @@ local function panel(t)
         Enabled            = true,
         Position           = T{ X = 40, Y = 400 },
         Scale              = 1.0,
-        Width              = 200,
-        BarHeight          = 16,
+        Width              = 220,
+        BarHeight          = 18,
         Spacing            = 2,
         MaxTimers          = 10,
         GrowUp             = false,
@@ -77,14 +77,14 @@ local defaults = T{
         Blocked         = T{},
     }),
     Recast = panel({
-        Position   = T{ X = 250, Y = 400 },
+        Position   = T{ X = 275, Y = 400 },
         GrowUp     = true,
         CountDown  = false,
         Colors     = T{ Low = 0xFF63BA8A, Mid = 0xFFC5A131, High = 0xFFD2ABAB },
         Blocked    = T{},
     }),
     Custom = panel({
-        Position     = T{ X = 250, Y = 404 },
+        Position     = T{ X = 275, Y = 404 },
         CountDown    = false,
         Colors       = T{ Low = 0xFFE04040, Mid = 0xFFC5A131, High = 0xFFFF8D79 },
         UpdateCustom = false,
@@ -183,7 +183,7 @@ local function help()
     draw.say('/pxt lock - lock the panels and save where they are');
     draw.say('/pxt custom "Label" 5m [repeat] ["tooltip"] - a timer of your own (30s, 5.5m, 1h, or 17:13:20)');
     draw.say('/pxt stop "Label" - remove a custom timer');
-    draw.say('/pxt font [mono|game|ashita] - the bar font');
+    draw.say('/pxt font [mono|moji|ashita] - the bar font');
 end
 
 ashita.events.register('command', 'pxtimers_command', function (e)
@@ -233,6 +233,7 @@ ashita.events.register('command', 'pxtimers_command', function (e)
         end
     elseif (sub == 'font') then
         local wanted = (args[3] or ''):lower();
+        if (wanted == 'moji') then wanted = 'game'; end
         if (draw.FONT_NAMES[wanted] == nil) then
             -- Alone: step to the next font.
             local current = 1;

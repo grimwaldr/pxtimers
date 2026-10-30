@@ -683,9 +683,9 @@ local function CreateTimer(buffData)
     timerData.Duration = math.max(timerData.Expiration - os.clock(), 0);
     timerData.Icon = buffData.Icon;
     if (count > 1) then
-        timerData.Label = string.format('%s[%s+%u]', buffData.Name, shortest.Name, count-1);
+        timerData.Label = string.format('%s [%s +%u]', buffData.Name, shortest.Name, count-1);
     else
-        timerData.Label = string.format('%s[%s]', buffData.Name, shortest.Name);
+        timerData.Label = string.format('%s [%s]', buffData.Name, shortest.Name);
     end
     timerData.Local = {};
     timerData.Players = playerArray;

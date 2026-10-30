@@ -235,7 +235,7 @@ local function MonsterIdToName(id)
     if (index == 0) then
         return 'Unknown';
     elseif (gSettings.Debuff.ShowMobIndex) then
-        return string.format('%s 0x%03X', entity:GetName(index), index);
+        return string.format('%s %03X', entity:GetName(index), index); -- last 3 hex digits, as pxparse labels mobs
     else
         return entity:GetName(index);
     end
@@ -595,9 +595,9 @@ local function CreateTimer(buffData)
     timerData.Duration = math.max(timerData.Expiration - os.clock(), 0);
     timerData.Icon = buffData.Icon;
     if (count > 1) then
-        timerData.Label = string.format('%s[%s+%u]', buffData.Name, shortest.Name, count-1);
+        timerData.Label = string.format('%s [%s +%u]', buffData.Name, shortest.Name, count-1);
     else
-        timerData.Label = string.format('%s[%s]', buffData.Name, shortest.Name);
+        timerData.Label = string.format('%s [%s]', buffData.Name, shortest.Name);
     end
     timerData.Local = {};
     timerData.Targets = targetArray;

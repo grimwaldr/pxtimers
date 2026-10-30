@@ -33,7 +33,7 @@ Each bar shows the icon, the name and the time left. The colour moves from High 
 | Font | What it is |
 |---|---|
 | DejaVu Mono | DejaVu Sans Mono, shipped in `lib/fonts/` at every scale. The default |
-| Game | The game's own letters, read from your install. It's a bitmap, so it's used at scale 1 and other scales fall back to DejaVu Mono |
+| Moji | The game's own text font, read from your game files (`ROM/119/51.DAT`, or another region's copy). Nothing from the game ships with pxtimers. It's a 16px bitmap, so it's used at scale 1 and other scales fall back to DejaVu Mono |
 | Ashita | Ashita's ImGui font |
 
 If a font can't load, pxtimers says so once in chat and uses the next one.
@@ -47,7 +47,7 @@ If a font can't load, pxtimers says so once in chat and uses the next one.
 | `/pxt lock` | Lock them and save where they are |
 | `/pxt custom "Label" 5m [repeat] ["tooltip"]` | A timer of your own: `30s`, `5.5m`, `1h`, or a clock time like `17:13:20` |
 | `/pxt stop "Label"` | Remove a custom timer |
-| `/pxt font [mono\|game\|ashita]` | The bar font. Alone, the next one |
+| `/pxt font [mono\|moji\|ashita]` | The bar font. Alone, the next one |
 
 ## Durations on Phoenix
 

@@ -19,7 +19,7 @@ local C          = ffi.C;
 local draw = {};
 
 draw.FONTS      = { 'mono', 'game', 'ashita' };
-draw.FONT_NAMES = { mono = 'DejaVu Mono', game = 'Game', ashita = 'Ashita' };
+draw.FONT_NAMES = { mono = 'DejaVu Mono', game = 'Moji (game)', ashita = 'Ashita' };
 
 local off    = {};   -- fonts that failed, off for the session
 local pushed = nil;  -- whether ImGui takes a font size (PushFont(font, size)); false once it hasn't

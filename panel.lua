@@ -271,6 +271,12 @@ function Panel:Render(timers)
     if (imgui.Begin('##pxtimers_' .. self.Name, true, WINDOW_FLAGS)) then
         local list = imgui.GetWindowDrawList();
         local font_pushed = draw.push(m.px);
+        self.Bounds = { MinX = ax, MinY = top, MaxX = ax + m.width, MaxY = top + height };
+        if (self.AllowDrag) then
+            -- Tint goes under the bars so they stay readable while moving.
+            local b = self.Bounds;
+            list:AddRectFilled({ b.MinX - 3, b.MinY - 3 }, { b.MaxX + 3, b.MaxY + 3 }, draw.u32(PALETTE.tint), 4);
+        end
         for i, row in ipairs(rows) do
             local y;
             if (s.GrowUp) then
@@ -281,7 +287,6 @@ function Panel:Render(timers)
             self:DrawBar(list, m, ax, y, row);
         end
 
-        self.Bounds = { MinX = ax, MinY = top, MaxX = ax + m.width, MaxY = top + height };
         if (self.AllowDrag) then
             self:DrawMoveFrame(list, m);
         end
@@ -298,7 +303,6 @@ end
 function Panel:DrawMoveFrame(list, m)
     local b = self.Bounds;
     local hot = self.DragActive or self:Contains(b, self.Mouse.X, self.Mouse.Y);
-    list:AddRectFilled({ b.MinX - 3, b.MinY - 3 }, { b.MaxX + 3, b.MaxY + 3 }, draw.u32(PALETTE.tint), 4);
     list:AddRect({ b.MinX - 3, b.MinY - 3 }, { b.MaxX + 3, b.MaxY + 3 }, draw.u32(hot and PALETTE.ember or PALETTE.frame), 4, 0, hot and 2 or 1);
 
     local title = TITLES[self.Name] or self.Name;

@@ -152,7 +152,7 @@ local function general_tab()
     end
     imgui.TextColored(HEADER, 'Look');
     combo('Font##pxtFont', gSettings, 'Font', draw.FONTS, draw.FONT_NAMES);
-    imgui.ShowHelp('DejaVu Mono ships with pxtimers. Game is FFXI\'s own font, read from your install (used at scale 1; other scales fall back to DejaVu Mono). Ashita is ImGui\'s font.');
+    imgui.ShowHelp('DejaVu Mono ships with pxtimers. Moji is FFXI\'s own text font, read from your game files (ROM/119/51.DAT) at scale 1; other scales fall back to DejaVu Mono. Ashita is ImGui\'s font.');
     checkbox('Icons##pxtIcons', gSettings, 'Icons', 'Turns every panel\'s icons off at once.');
     checkbox('Hide with Ashita\'s primitives##pxtPrims', gSettings, 'HideWithPrimitives', 'Hide the bars whenever Ashita hides its on-screen objects (e.g. /primitives hide or screenshots).');
     if (imgui.Button('Move panels##pxtMove')) then
