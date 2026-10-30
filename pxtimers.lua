@@ -11,7 +11,7 @@
 
 addon.name    = 'pxtimers';
 addon.author  = 'Grimwald';
-addon.version = '0.1.3';
+addon.version = '0.1.4';
 addon.desc    = 'Buff, debuff, recast and custom timer bars for Phoenix XI.';
 addon.link    = 'https://github.com/grimwaldr/pxtimers';
 
@@ -87,6 +87,7 @@ local defaults = T{
     Custom = panel({
         Position     = T{ X = 420, Y = 404 },
         CountDown    = false,
+        ShowIcons    = false,
         Colors       = T{ Low = 0xFFE04040, Mid = 0xFFC5A131, High = 0xFFFF8D79 },
         UpdateCustom = false,
     }),

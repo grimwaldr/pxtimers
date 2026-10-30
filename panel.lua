@@ -230,8 +230,6 @@ function Panel:DrawBar(list, m, x, y, row)
         local tex = draw.icon(row.Icon);
         if (tex) then
             list:AddImage(tex, { x, y }, { x + m.icon, y + m.icon });
-        else
-            list:AddRectFilled({ x, y }, { x + m.icon, y + m.icon }, draw.u32(PALETTE.track), m.round);
         end
     end
 

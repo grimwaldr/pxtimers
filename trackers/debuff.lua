@@ -25,6 +25,7 @@ local durations = require('durations.include');
 local encoding = require('lib.encoding');
 local actionPacket = require('actionpacket');
 local buffFlags = require('buffflags');
+local actionIcons = require('trackers.icons');
 
 --Constants..
 local abilityTypes = T{ 6, 14, 15 };
@@ -139,6 +140,13 @@ local function GetActionIcon(actionTable)
             actionTable.Icon = override;
             return;
         end
+    end
+
+    -- The icon the spell or ability has in its menu, as on the Recasts panel; the status icon if there isn't one.
+    local ok, menuIcon = pcall(actionIcons.action, actionTable.ActionType, actionTable.ActionId);
+    if (ok and menuIcon) then
+        actionTable.Icon = menuIcon;
+        return;
     end
 
     if (actionTable.BuffId ~= nil) and (actionTable.BuffId > 0) then
