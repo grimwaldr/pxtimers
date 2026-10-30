@@ -158,6 +158,8 @@ local function general_tab()
     combo('Font##pxtFont', gSettings, 'Font', draw.FONTS, draw.FONT_NAMES);
     imgui.ShowHelp('DejaVu Mono ships with pxtimers. Moji is FFXI\'s own text font, read from your game files (ROM/119/51.DAT) at scale 1; other scales fall back to DejaVu Mono. Ashita is ImGui\'s font.');
     checkbox('Icons##pxtIcons', gSettings, 'Icons', 'Turns every panel\'s icons off at once.');
+    combo('Buff/debuff icons##pxtEffectIcons', gSettings, 'EffectIcons', { 'status', 'menu' }, { status = 'Status icon (from your client)', menu = 'Spell/ability menu icon' });
+    imgui.ShowHelp('Status: the effect\'s own icon, the one on your status bar. Menu: the same icon the Recasts panel uses. Applies to new bars.');
     checkbox('Hide with Ashita\'s primitives##pxtPrims', gSettings, 'HideWithPrimitives', 'Hide the bars whenever Ashita hides its on-screen objects (e.g. /primitives hide or screenshots).');
     if (imgui.Button('Move panels##pxtMove')) then
         gCommands.unlock();

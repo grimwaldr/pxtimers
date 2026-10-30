@@ -11,7 +11,7 @@
 
 addon.name    = 'pxtimers';
 addon.author  = 'Grimwald';
-addon.version = '0.1.4';
+addon.version = '0.1.5';
 addon.desc    = 'Buff, debuff, recast and custom timer bars for Phoenix XI.';
 addon.link    = 'https://github.com/grimwaldr/pxtimers';
 
@@ -59,6 +59,7 @@ end
 local defaults = T{
     Font               = 'mono',
     Icons              = true,
+    EffectIcons        = 'status',
     HideWithPrimitives = true,
 
     -- Buffs grow up and debuffs grow down from the same edge, recasts and custom the same to the right.

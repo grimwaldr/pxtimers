@@ -135,11 +135,14 @@ local function GetActionIcon(actionTable)
         end
     end
 
-    -- The icon the spell or ability has in its menu, as on the Recasts panel; the status icon if there isn't one.
-    local ok, menuIcon = pcall(actionIcons.action, actionTable.ActionType, actionTable.ActionId);
-    if (ok and menuIcon) then
-        actionTable.Icon = menuIcon;
-        return;
+    -- 'menu': the icon the spell or ability has in its menu, as on the Recasts panel.
+    -- 'status' (default): the status effect's own icon from the game client, as tTimers did.
+    if (gSettings.EffectIcons == 'menu') then
+        local ok, menuIcon = pcall(actionIcons.action, actionTable.ActionType, actionTable.ActionId);
+        if (ok and menuIcon) then
+            actionTable.Icon = menuIcon;
+            return;
+        end
     end
 
     if (actionTable.BuffId ~= nil) and (actionTable.BuffId > 0) then
