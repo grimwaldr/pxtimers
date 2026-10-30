@@ -65,6 +65,20 @@ function draw.alpha(c, a)
     return { c[1], c[2], c[3], (c[4] or 1) * a };
 end
 
+-- A shade dark enough that near-white text on it passes WCAG AA contrast (4.5:1) for any hue.
+function draw.deep(c)
+    local function lin(v) return (v <= 0.04045) and (v / 12.92) or (((v + 0.055) / 1.055) ^ 2.4); end
+    local k = 1.0;
+    for _ = 1, 20 do
+        local l = 0.2126 * lin(c[1] * k) + 0.7152 * lin(c[2] * k) + 0.0722 * lin(c[3] * k);
+        if ((0.93 + 0.05) / (l + 0.05) >= 4.5) then
+            break;
+        end
+        k = k * 0.92;
+    end
+    return { c[1] * k, c[2] * k, c[3] * k, 1 };
+end
+
 function draw.u32(c)
     return imgui.GetColorU32(c);
 end

@@ -23,6 +23,8 @@ local WM_LBUTTONUP   = 514;
 -- Phoenix palette (shared with pxparse): the move-mode frame and the empty part of each bar.
 local PALETTE = {
     track  = { 0.094, 0.055, 0.055, 0.80 },  -- #180e0e
+    row    = { 0.071, 0.043, 0.043, 0.90 },  -- behind gauge-style text: dark and nearly opaque
+    groove = { 0.000, 0.000, 0.000, 0.55 },
     edge   = { 0.824, 0.671, 0.671, 0.22 },  -- #d2abab
     frame  = { 0.773, 0.318, 0.318, 0.90 },  -- #c55151
     tint   = { 0.773, 0.318, 0.318, 0.16 },
@@ -95,12 +97,15 @@ function Panel:Metrics()
     local font  = gSettings.Font;
     local px    = math.floor(13 * scale + 0.5);
     local line  = draw.line_height(font, px);
-    local h     = math.max(math.floor(s.BarHeight * scale + 0.5), line + 2);
+    -- Gauge style keeps the text clear of the colour: text on a dark row, the gauge strip under it.
+    local gauge = (s.BarStyle ~= 'fill') and math.max(2, math.floor(3 * scale + 0.5)) or 0;
+    local h     = math.max(math.floor(s.BarHeight * scale + 0.5), line + 2 + ((gauge > 0) and (gauge + 2) or 0));
     return {
         px      = px,
         font    = font,
         line    = line,
         bar_h   = h,
+        gauge   = gauge,
         width   = math.floor(s.Width * scale + 0.5),
         gap     = math.max(1, math.floor(s.Spacing * scale + 0.5)),
         icon    = s.ShowIcons and gSettings.Icons and h or 0,
@@ -230,28 +235,44 @@ function Panel:DrawBar(list, m, x, y, row)
         end
     end
 
-    -- Track
-    list:AddRectFilled({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.track), m.round);
-
-    -- Fill: shrinks as it runs out (count down) or grows toward done (count up).
-    local fill = 0;
+    -- How full: shrinks as it runs out (count down) or grows toward done (count up).
+    local fill;
     if (row.Complete) then
-        local on = (math.floor(now * 5) % 2) == 0;
-        fill = on and 1 or 0;
+        fill  = ((math.floor(now * 5) % 2) == 0) and 1 or 0;
         color = draw.argb(s.Colors.Low);
     else
         fill = s.CountDown and row.Percent or (1 - row.Percent);
     end
-    if (fill > 0) then
-        local fx = bar_x + math.max(bar_w * fill, 1);
-        local r  = (fx - bar_x >= m.round * 2) and m.round or 0;
-        list:AddRectFilled({ bar_x, y }, { fx, y2 }, draw.u32(draw.alpha(color, 0.92)), r);
-        list:AddRectFilled({ bar_x + r, y }, { math.max(fx - r, bar_x + r), y + 1 }, draw.u32({ 1, 1, 1, 0.22 }));
+
+    if (m.gauge > 0) then
+        -- Dark row for the text, a thin gauge along its bottom edge.
+        list:AddRectFilled({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.row), m.round);
+        local gx1, gx2 = bar_x + 2, x2 - 2;
+        local gy1, gy2 = y2 - 2 - m.gauge, y2 - 2;
+        list:AddRectFilled({ gx1, gy1 }, { gx2, gy2 }, draw.u32(PALETTE.groove));
+        if (fill > 0) then
+            list:AddRectFilled({ gx1, gy1 }, { gx1 + math.max((gx2 - gx1) * fill, 1), gy2 }, draw.u32(color));
+        end
+        if (row.Complete and fill > 0) then
+            list:AddRect({ bar_x, y }, { x2, y2 }, draw.u32(color), m.round, 0, 1.5);
+        else
+            list:AddRect({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.edge), m.round, 0, 1.0);
+        end
+    else
+        -- Filled bar, in a deep shade of the colour so light text stays readable on it.
+        list:AddRectFilled({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.track), m.round);
+        if (fill > 0) then
+            local fx = bar_x + math.max(bar_w * fill, 1);
+            local r  = (fx - bar_x >= m.round * 2) and m.round or 0;
+            list:AddRectFilled({ bar_x, y }, { fx, y2 }, draw.u32(draw.deep(color)), r);
+            list:AddRectFilled({ bar_x + r, y }, { math.max(fx - r, bar_x + r), y + 1 }, draw.u32(draw.alpha(color, 0.9)));
+        end
+        list:AddRect({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.edge), m.round, 0, 1.0);
     end
-    list:AddRect({ bar_x, y }, { x2, y2 }, draw.u32(PALETTE.edge), m.round, 0, 1.0);
 
     -- Time on the right, name on the left in what's left over.
-    local ty = y + math.floor((m.bar_h - m.line) / 2);
+    local text_h = m.bar_h - ((m.gauge > 0) and (m.gauge + 2) or 0);
+    local ty = y + math.floor((text_h - m.line) / 2);
     local right = right_text(self, row);
     if (right ~= '') then
         local right_w = draw.text_width(m.font, m.px, right);

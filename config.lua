@@ -116,6 +116,9 @@ local function panel_tab(name)
     combo('Sort' .. id .. 'Sort', s, 'SortType', SORTS);
     imgui.ShowHelp(SORT_HELP[s.SortType] or '');
 
+    combo('Bar style' .. id .. 'Style', s, 'BarStyle', { 'gauge', 'fill' }, { gauge = 'Gauge (text on dark, strip below)', fill = 'Filled (deep colours)' });
+    imgui.ShowHelp('Gauge keeps the text on a dark row with the timer as a strip underneath, the easiest to read. Filled colours the whole bar in a shade dark enough for the text.');
+
     imgui.TextColored(HEADER, 'Size');
     slider_float('Scale' .. id .. 'Scale', s, 'Scale', 0.5, 3.0, '%.2f');
     slider_int('Min width' .. id .. 'Width', s, 'Width', 100, 400);

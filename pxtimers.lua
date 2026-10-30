@@ -11,7 +11,7 @@
 
 addon.name    = 'pxtimers';
 addon.author  = 'Grimwald';
-addon.version = '0.1.2';
+addon.version = '0.1.3';
 addon.desc    = 'Buff, debuff, recast and custom timer bars for Phoenix XI.';
 addon.link    = 'https://github.com/grimwaldr/pxtimers';
 
@@ -33,6 +33,7 @@ local function panel(t)
         Scale              = 1.0,
         Width              = 220,
         BarHeight          = 18,
+        BarStyle           = 'gauge',
         Spacing            = 2,
         MaxTimers          = 10,
         GrowUp             = false,

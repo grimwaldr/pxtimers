@@ -19,7 +19,7 @@ Settings are kept per character in `config/addons/pxtimers`.
 | Recasts | Your spell and ability recasts, filling up until ready | Right, growing up |
 | Custom | Timers you start with `/pxt custom` | Right, growing down |
 
-Each bar shows the icon, the name and the time left. A panel widens to fit its longest name, so names are never cut short; the Width setting is the narrowest it goes. The colour moves from High to Mid to Low as it runs out (green, gold, red by default; recasts go the other way and turn green when nearly ready). A bar flashes for a few seconds when it ends.
+Each bar shows the icon, the name and the time left. By default the text sits on a dark row with the timer as a coloured strip underneath, so it reads the same whatever the colour or how full the bar is. The Filled style colours the whole bar instead, in a shade dark enough to keep the text readable. A panel widens to fit its longest name, so names are never cut short; the Width setting is the narrowest it goes. The colour moves from High to Mid to Low as it runs out (green, gold, red by default; recasts go the other way and turn green when nearly ready). A bar flashes for a few seconds when it ends.
 
 - **Move:** `/pxt move` unlocks every panel and fills it with sample bars. Drag a panel by its bars or its name tab, then `/pxt lock`.
 - **Shift-click** a bar to remove it.
@@ -98,6 +98,8 @@ resources/        recast icons for spells and abilities
 ## Why it works this way
 
 **Everything is drawn with ImGui.** Bars, icons and text go on ImGui draw lists, the same way Ashita draws its own windows. There's no native font DLL, no GDI+ and no D3DX sprite, so it draws the same under Wine or Proton as on Windows.
+
+**Text never sits on bright colour.** Light text over a bright fill, or text that crosses the edge of a fill mid-word, is hard to read at a glance. The gauge style keeps every letter on the same dark row; the filled style darkens each colour until light text on it passes the WCAG AA contrast ratio (4.5:1).
 
 **Fonts are drawn, not loaded.** Loading a font into ImGui while the game is running can crash it. Both extra fonts are drawn letter by letter as small textured squares, with a dark ring baked in so the text reads on any bar colour.
 
