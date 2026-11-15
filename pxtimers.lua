@@ -11,7 +11,7 @@
 
 addon.name    = 'pxtimers';
 addon.author  = 'Grimwald';
-addon.version = '0.1.5';
+addon.version = '0.1.6';
 addon.desc    = 'Buff, debuff, recast and custom timer bars for Phoenix XI.';
 addon.link    = 'https://github.com/grimwaldr/pxtimers';
 
@@ -150,6 +150,24 @@ function gCommands.unlock()
     draw.say('Panels unlocked: drag them where you want, then /pxt lock.');
 end
 
+-- Puts every panel back where it starts, or just `name`'s.
+function gCommands.reset(name)
+    local moved = nil;
+    for panelName, p in pairs(gPanels) do
+        if (name == nil) or (panelName:lower() == name:lower()) then
+            p.Settings.Position.X = defaults[panelName].Position.X;
+            p.Settings.Position.Y = defaults[panelName].Position.Y;
+            moved = panelName;
+        end
+    end
+    if (moved == nil) then
+        draw.say('No panel called ' .. tostring(name) .. ': use buff, debuff, recast or custom.');
+        return;
+    end
+    settings.save();
+    draw.say(name and ('Moved the ' .. moved .. ' panel back to its starting spot.') or 'Moved every panel back to its starting spot.');
+end
+
 function gCommands.lock()
     for _, p in pairs(gPanels) do
         p.AllowDrag = false;
@@ -184,6 +202,7 @@ local function help()
     draw.say('/pxt - settings');
     draw.say('/pxt move - unlock the panels to drag them (shows sample bars)');
     draw.say('/pxt lock - lock the panels and save where they are');
+    draw.say('/pxt reset [buff|debuff|recast|custom] - put the panels (or one) back where they start');
     draw.say('/pxt custom "Label" 5m [repeat] ["tooltip"] - a timer of your own (30s, 5.5m, 1h, or 17:13:20)');
     draw.say('/pxt stop "Label" - remove a custom timer');
     draw.say('/pxt font [mono|moji|ashita] - the bar font');
@@ -210,6 +229,8 @@ ashita.events.register('command', 'pxtimers_command', function (e)
         gCommands.unlock();
     elseif (sub == 'lock') then
         gCommands.lock();
+    elseif (sub == 'reset') then
+        gCommands.reset(args[3]);
     elseif (sub == 'custom') then
         local duration = parse_duration(args[4]);
         if (not args[3] or not duration) then

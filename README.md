@@ -23,7 +23,7 @@ Settings are kept per character in `config/addons/pxtimers`.
 
 Each bar shows the icon, the name and the time left. Buffs and debuffs show the effect's status icon, read from your own game client (the one on your status bar). Recasts show the spell or ability icon that ships in `resources/`, and buffs and debuffs can use those too (General tab). Custom timers have no icon. By default the text sits on a dark row with the timer as a coloured strip underneath, so it reads the same whatever the colour or how full the bar is. The Filled style colours the whole bar instead, in a shade dark enough to keep the text readable. A panel widens to fit its longest name, so names are never cut short; the Width setting is the narrowest it goes. The colour moves from High to Mid to Low as it runs out (green, gold, red by default; recasts go the other way and turn green when nearly ready). A bar flashes for a few seconds when it ends.
 
-- **Move:** `/pxt move` unlocks every panel and fills it with sample bars. Drag a panel by its bars or its name tab, then `/pxt lock`.
+- **Move:** `/pxt move` unlocks every panel and fills it with frozen sample bars, so its size doesn't change while you drag it. Drag a panel by its bars or its name tab, then `/pxt lock`. To line panels up exactly, type the X and Y on the panel's tab in `/pxt`. `/pxt reset` puts them back where they start.
 - **Shift-click** a bar to remove it.
 - **Ctrl-click** a bar to remove it and stop that action making bars. Undo it on the Blocked tabs in `/pxt`.
 - **Hover** a bar for its details.
@@ -47,6 +47,7 @@ If a font can't load, pxtimers says so once in chat and uses the next one.
 | `/pxt` | Settings |
 | `/pxt move` | Unlock the panels to drag them |
 | `/pxt lock` | Lock them and save where they are |
+| `/pxt reset [buff\|debuff\|recast\|custom]` | Put every panel, or one, back where it starts |
 | `/pxt custom "Label" 5m [repeat] ["tooltip"]` | A timer of your own: `30s`, `5.5m`, `1h`, or a clock time like `17:13:20` |
 | `/pxt stop "Label"` | Remove a custom timer |
 | `/pxt font [mono\|moji\|ashita]` | The bar font. Alone, the next one |

@@ -20,61 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --]]
 
+--[[
+* pxtimers: the sample bars shown in move mode. They're frozen (nothing ticks or expires) so a
+* panel's size stays put while you drag it, and they fill the panel to its Max bars so you see the
+* full space it can take. Times are spread across the colour marks so every colour shows.
+--]]
 local tracker = {};
-local times = T{ 0, 10, 20, 30, 60, 300, 600, 1200, 3600 };
+local times = T{ 5, 20, 45, 90, 300, 600, 1200, 1800, 2700, 3600 };
 
-local panelState = {};
+-- Status icons for the samples: a fixed set so they don't change between frames.
+local icons = T{ 33, 40, 41, 43, 39, 42, 34, 35, 116, 37, 36, 38, 44, 45, 46, 47, 48, 49, 50, 51 };
+
+local cache = {};
 function tracker:Tick(panelName)
-    local state = panelState[panelName];
-    local time = os.clock();
     local max = gPanels[panelName].Settings.MaxTimers;
-    if (state == nil) or (os.clock() > state.Reset) or (max ~= state.Max) then
-        local newState = {
-            ActiveTimers = T{},
-            Blocks = T{};
-            Max = max,
-            Reset = os.clock() + math.random(25,35),
-        };
-        if (state) then
-            newState.Blocks = state.Blocks;
-            newState.Icon = state.Icon;
-        else
-            newState.Icon = string.format('STATUS:%u', math.random(1, 500));
+    local state = cache[panelName];
+    if (state == nil) or (state.Max ~= max) then
+        state = { Max = max, Timers = T{} };
+        local name = ({ Buff = 'Buff', Debuff = 'Debuff', Recast = 'Recast', Custom = 'Custom' })[panelName] or panelName;
+        for i = 1, max do
+            local duration = times[i] or (times[#times] + (i * 60));
+            state.Timers:append({
+                Creation      = i,
+                Duration      = duration,
+                TotalDuration = duration * 2,
+                Icon          = string.format('STATUS:%u', icons[((i - 1) % #icons) + 1]),
+                Label         = string.format('Sample %s %u', name, i),
+                Local         = T{},
+                Tooltip       = 'Sample bar: drag the panel to move it.',
+            });
         end
-        for i = 1,max do
-            local duration = times[i];
-            if duration == nil then
-                duration = times[#times] + ((math.random(1, 100) / 10));
-            end
-
-            local newCustomTimer = {
-                Creation = os.clock(),
-                Icon = string.format('STATUS:%u', math.random(1, 500)),
-                Label = string.format('Dummy %s %u', panelName, i),
-                Local = T{},
-                Expiration = os.clock() + duration,
-                Tooltip = string.format('You are now hovering over Dummy %s %u.', panelName, i);
-                TotalDuration = duration,
-            };
-            if (newState.Blocks[newCustomTimer.Label] == nil) then
-                newState.ActiveTimers:append(newCustomTimer);
-            end
-        end
-        state = newState;
-        panelState[panelName] = state;
+        cache[panelName] = state;
     end
-
-    for _,timer in ipairs(state.ActiveTimers) do
-        if (timer.Local.Block) then
-            timer.Local.Delete = true;
-            state.Blocks[timer.Label] = true;
-            print(chat.header('pxtimers') .. chat.message('Blocked ' .. timer.Label));
-            timer.Local.Block = nil;
-        end
+    -- Nothing in move mode removes a sample, so clear any delete a click may have set.
+    for _, timer in ipairs(state.Timers) do
+        timer.Local.Delete = nil;
+        timer.Local.Block = nil;
     end
-    state.ActiveTimers = state.ActiveTimers:filteri(function(a) return (a.Local.Delete ~= true) end);
-    state.ActiveTimers:each(function(a) a.Duration = a.Expiration - time; end);
-    return state.ActiveTimers;
+    return state.Timers;
 end
 
 return tracker;

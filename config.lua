@@ -119,6 +119,24 @@ local function panel_tab(name)
     combo('Bar style' .. id .. 'Style', s, 'BarStyle', { 'gauge', 'fill' }, { gauge = 'Gauge (text on dark, strip below)', fill = 'Filled (deep colours)' });
     imgui.ShowHelp('Gauge keeps the text on a dark row with the timer as a strip underneath, the easiest to read. Filled colours the whole bar in a shade dark enough for the text.');
 
+    imgui.TextColored(HEADER, 'Position');
+    imgui.ShowHelp('The anchor: the bottom-left corner when growing up, the top-left when growing down. Type exact numbers to line panels up.');
+    local x, y = { s.Position.X }, { s.Position.Y };
+    imgui.PushItemWidth(110);
+    if (imgui.InputInt('X' .. id .. 'PosX', x)) then
+        s.Position.X = x[1];
+        save();
+    end
+    imgui.SameLine();
+    if (imgui.InputInt('Y' .. id .. 'PosY', y)) then
+        s.Position.Y = y[1];
+        save();
+    end
+    imgui.PopItemWidth();
+    if (imgui.Button('Reset position' .. id .. 'Reset')) then
+        gCommands.reset(name);
+    end
+
     imgui.TextColored(HEADER, 'Size');
     slider_float('Scale' .. id .. 'Scale', s, 'Scale', 0.5, 3.0, '%.2f');
     slider_int('Min width' .. id .. 'Width', s, 'Width', 100, 400);
@@ -167,6 +185,10 @@ local function general_tab()
     imgui.SameLine();
     if (imgui.Button('Lock panels##pxtLock')) then
         gCommands.lock();
+    end
+    imgui.SameLine();
+    if (imgui.Button('Reset positions##pxtReset')) then
+        gCommands.reset();
     end
 
     imgui.TextColored(HEADER, 'Buffs');
